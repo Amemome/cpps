@@ -1,4 +1,3 @@
-
 template <typename T>
 struct SegTree {
     int n;          // 리프 노드의 개수 (2의 거듭제곱)
@@ -6,14 +5,21 @@ struct SegTree {
     T identity;     // 항등원 (덧셈:0, 곱셈:1, Min:INF, Max:-INF)
 
     T merge(T a, T b) {
-        return a + b;
+        return std::max(a,b);
     }
 
-    SegTree(int size, T id = 0) {
+    SegTree(int size, const vector<T>& data, T id = 0) {
         identity = id;
         n = 1;
         while (n < size) n *= 2;
         tree.assign(n * 2, identity); // 초기화
+
+        for(int i = 0; i < data.size(); i++) {
+            if(i < size) tree[n+i] = data[i];
+        }
+        for(int i = n-1; i >= 1; i--) {
+            tree[i] = merge(tree[2*i], tree[2*i+1]);
+        }
     }
 
     // idx번째(0-based) 값을 val로 변경
